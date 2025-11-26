@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+gunicorn
+line-bot-sdk
+firebase-admin
+google-generativeai
+pytz
+requests
+python-multipart
+python-dotenv
