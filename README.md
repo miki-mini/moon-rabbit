@@ -33,7 +33,7 @@
 * **Infrastructure:** Google Cloud Run (Serverless)
 * **Database:** Google Cloud Firestore (NoSQL)
 * **Storage:** Google Cloud Storage (画像ホスティング)
-* **AI Model:** Google Gemini API (gemini-1.5-flash / gemini-2.5-flash)
+* **AI Model:** Google Gemini API (gemini-1.5-flash)
 * **Interface:** LINE Messaging API (Flex Message)
 * **Library:** firebase-admin, line-bot-sdk, pytz
 
@@ -49,3 +49,29 @@ graph TD
         Cloud_Run -- Chat --> Gemini[Gemini API]
         Cloud_Run -- Get Image --> GCS[Cloud Storage]
     end
+```
+
+## 💡 こだわったポイント
+
+* **ステータス管理の厳密さ:**
+    * 「人参が足りない時は買えない」「既に持っているアイテムは二重購入させない」といった条件分岐を実装し、データの整合性を保っています。
+* **UX（ユーザー体験）の向上:**
+    * テキストだけでなく、Flex Messageを活用して視覚的に楽しめる「会員証」や「ショップ」を作成しました。
+* **ハイブリッドな応答システム:**
+    * 「コマンド（ショップ、会員証）」と「AIによる自由会話」を共存させ、実用性とエンターテイメント性を両立させました。
+* **セキュリティ:**
+    * APIキーなどの機密情報は環境変数（Environment Variables）で管理し、コード上には一切ハードコーディングしていません。
+
+## 📸 スクリーンショット
+
+| 会員証（ノーマル） | ショップ画面 | 着せ替え（サングラス） |
+| :---: | :---: | :---: |
+| <img src="" width="200"> | <img src="" width="200"> | <img src="" width="200"> |
+
+## 🚀 今後の展望
+* ユーザーランキング機能の実装
+* リッチメニューによる操作性の向上
+* 季節限定アイテムの追加
+
+---
+Created by Miki
