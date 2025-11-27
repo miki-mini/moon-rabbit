@@ -64,9 +64,9 @@ graph TD
 
 ## 📸 スクリーンショット
 
-| 会員証（ノーマル） | ショップ画面 | 着せ替え（サングラス） |
-| :---: | :---: | :---: |
-| <img src="" width="200"> | <img src="" width="200"> | <img src="" width="200"> |
+| 会員証 | ショップ画面 |
+| :---: | :---: |
+| <img src="https://github.com/user-attachments/assets/3815b7eb-3955-40bc-bd1e-1e88ecc63973" width="200"> | <img src="https://github.com/user-attachments/assets/3861ef35-3a60-4626-8f2f-bf32fe6ed1bf" width="200"> |
 
 ## 🚀 今後の展望
 * ユーザーランキング機能の実装
