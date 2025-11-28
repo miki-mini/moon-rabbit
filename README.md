@@ -1,13 +1,13 @@
-# 🌕 月うさぎからのルナ・ギフト (Moon Rabbit Bot)
+🌕 月うさぎからのおくりもの 🥕 (Moon Rabbit Bot)
 
 毎朝の早起きを楽しく習慣化するための、LINEボット形式の育成ゲーム・コミュニケーションアプリです。
 ユーザーは月うさぎの「飼い主」となり、毎日の挨拶を通じて通貨（人参）を集め、アイテム購入や着せ替えを楽しむことができます。
 
-## 📱 概要 (Features)
+📱 概要 (Features)
 
 ただの会話ボットではなく、**「データベースによるステータス管理」** と **「生成AIによる動的な会話」** を組み合わせた、ゲーム性の高いアプリケーションです。
 
-### 🐰 主な機能
+🐰 主な機能
 1.  **早起きストリーク（継続）機能**
     * 毎朝「おはよう」と挨拶することで、通貨（人参）を獲得。
     * 連続ログイン日数（ストリーク）をFirestoreで管理し、継続を応援。
@@ -24,7 +24,7 @@
 6.  **AIうさぎとの会話**
     * Google Gemini APIを活用し、特定のコマンド以外は「月のうさぎ」というペルソナ（人格）で自然な雑談が可能。
 
-## 🛠️ 技術スタック (Tech Stack)
+🛠️ 技術スタック (Tech Stack)
 
 モダンなサーバーレスアーキテクチャを採用し、スケーラビリティと運用コストの最適化を図っています。
 
@@ -42,16 +42,16 @@
 ```mermaid
 graph TD
     User((User)) -- LINE App --> LINE_Platform
-    LINE_Platform -- Webhook --> Cloud_Run[Google Cloud Run<br>(FastAPI / Python)]
+    LINE_Platform -- Webhook --> Cloud_Run["Google Cloud Run<br>(FastAPI / Python)"]
 
     subgraph Google Cloud
-        Cloud_Run -- Read/Write --> Firestore[(Firestore<br>User Data)]
+        Cloud_Run -- Read/Write --> Firestore[("Firestore<br>User Data")]
         Cloud_Run -- Chat --> Gemini[Gemini API]
         Cloud_Run -- Get Image --> GCS[Cloud Storage]
     end
 ```
 
-## 💡 こだわったポイント
+💡 こだわったポイント
 
 * **ステータス管理の厳密さ:**
     * 「人参が足りない時は買えない」「既に持っているアイテムは二重購入させない」といった条件分岐を実装し、データの整合性を保っています。
@@ -62,16 +62,16 @@ graph TD
 * **セキュリティ:**
     * APIキーなどの機密情報は環境変数（Environment Variables）で管理し、コード上には一切ハードコーディングしていません。
 
-## 📸 スクリーンショット
+📸 スクリーンショット
 
 | 会員証 | ショップ画面 |
 | :---: | :---: |
 | <img src="https://github.com/user-attachments/assets/3815b7eb-3955-40bc-bd1e-1e88ecc63973" width="200"> | <img src="https://github.com/user-attachments/assets/3861ef35-3a60-4626-8f2f-bf32fe6ed1bf" width="200"> |
 
-## 🚀 今後の展望
+🚀 今後の展望
 * ユーザーランキング機能の実装
-* リッチメニューによる操作性の向上
+* レベルアップ機能の実装
 * 季節限定アイテムの追加
 
 ---
-Created by Miki
+Created by miki-mini
