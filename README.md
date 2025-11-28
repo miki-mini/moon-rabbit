@@ -33,7 +33,7 @@
 * **Infrastructure:** Google Cloud Run (Serverless)
 * **Database:** Google Cloud Firestore (NoSQL)
 * **Storage:** Google Cloud Storage (画像ホスティング)
-* **AI Model:** Google Gemini API (gemini-1.5-flash)
+* **AI Model:** Google Gemini API (gemini-2.5-flash)
 * **Interface:** LINE Messaging API (Flex Message)
 * **Library:** firebase-admin, line-bot-sdk, pytz
 
