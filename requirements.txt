@@ -8,3 +8,5 @@ pytz
 requests
 python-multipart
 python-dotenv
+pytest
+pytest-mock
