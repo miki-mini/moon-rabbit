@@ -77,6 +77,15 @@ graph TD
 * ユーザーランキング機能の実装
 * レベルアップ機能の実装
 * 季節限定アイテムの追加
+---
+
+English Summary
+
+Concept: An interactive virtual pet bot that combines gamified daily routines with real-world environmental sync (moon phases).
+
+Features: Includes a Daily Streak system for morning greetings, a shop for character customization, and AI-driven chat powered by Gemini.
+
+Development: Developed with a focus on user engagement and state management using FastAPI and Firebase.
 
 ---
 Created by miki-mini
