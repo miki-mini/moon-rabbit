@@ -1,3 +1,8 @@
+![Rabbit Bot](https://img.shields.io/badge/Concept-Virtual_Pet_Rabbit-FF69B4?style=for-the-badge&logo=target)
+![Moon Phase](https://img.shields.io/badge/Feature-Moon_Phase_Sync-4B0082?style=for-the-badge&logo=nasa)
+![Gemini](https://img.shields.io/badge/AI-Gemini_Powered-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+
 🌕 月うさぎからのおくりもの 🥕 (Moon Rabbit Bot)
 
 毎朝の早起きを楽しく習慣化するための、LINEボット形式の育成ゲーム・コミュニケーションアプリです。
