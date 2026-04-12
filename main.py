@@ -112,3 +112,4 @@ def handle_message(event):
     # Send the replies
     if reply_content:
         line_bot_api.reply_message(event.reply_token, reply_content)
+
