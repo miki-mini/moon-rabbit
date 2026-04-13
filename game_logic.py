@@ -4,6 +4,7 @@ from datetime import datetime
 import pytz
 import google.generativeai as genai
 from config import GEMINI_API_KEY, RABBIT_SYSTEM_INSTRUCTION
+from firebase_admin import firestore
 
 # --- Core Logic & Database ---
 # Gemini Model (Lazy loaded)
@@ -85,17 +86,40 @@ def get_or_create_user(user_id):
 
 def process_morning_greeting(user_id):
     """Refactored logic for 'Good Morning' streak processing."""
-    user_data, doc_ref = get_or_create_user(user_id)
-
+    db = init_db()
+    doc_ref = db.collection("rabbit_gamers").document(user_id)
+    transaction = db.transaction()
+    
     today_date = datetime.now(pytz.timezone("Asia/Tokyo")).date()
     today_str = today_date.strftime("%Y-%m-%d")
+    
+    return _morning_greeting_transaction(transaction, doc_ref, today_str, today_date)
+
+@firestore.transactional
+def _morning_greeting_transaction(transaction, doc_ref, today_str, today_date):
+    snapshot = doc_ref.get(transaction=transaction)
+    
+    if not snapshot.exists:
+        # 初回ログイン時の処理
+        initial_data = {
+            "user_id": doc_ref.id,
+            "carrot_count": 1,
+            "moon_level": 1,
+            "current_streak": 1,
+            "last_login": today_str,
+            "items": [],
+            "current_look": "normal",
+            "created_at": datetime.now(pytz.timezone("Asia/Tokyo")),
+        }
+        transaction.set(doc_ref, initial_data)
+        return "今日から早起きチャレンジスタート！\n最初のご褒美の人参です！🥕"
+
+    user_data = snapshot.to_dict()
     last_login_str = user_data.get("last_login")
 
-    # If already logged in today
     if last_login_str == today_str:
         return "今日はもう人参あげましたよ！また明日ね🥕"
 
-    # Calculate streak
     current_streak = user_data.get("current_streak", 0)
     my_items = user_data.get("items", [])
     new_streak = 1
@@ -106,11 +130,9 @@ def process_morning_greeting(user_id):
         delta = (today_date - last_login_date).days
 
         if delta == 1:
-            # Consecutive login
             new_streak = current_streak + 1
             streak_message = f"\n🔥 {new_streak}日連続早起き中！すごい！"
         elif delta > 1:
-            # Streak broken, check for doll
             if "substitute_doll" in my_items:
                 my_items.remove("substitute_doll")
                 new_streak = current_streak + 1
@@ -121,9 +143,8 @@ def process_morning_greeting(user_id):
     else:
         streak_message = "\n今日から早起きチャレンジスタート！"
 
-    # Update DB
     new_carrot_count = user_data.get("carrot_count", 0) + 1
-    doc_ref.update({
+    transaction.update(doc_ref, {
         "carrot_count": new_carrot_count,
         "last_login": today_str,
         "current_streak": new_streak,
@@ -132,9 +153,16 @@ def process_morning_greeting(user_id):
 
     return f"おはようございます！☀️\n早起きのご褒美の人参です！🥕{streak_message}"
 
-def process_purchase(user_id, item_key, price, item_name):
-    """Generic logic for purchasing an item."""
-    user_data, doc_ref = get_or_create_user(user_id)
+
+@firestore.transactional
+def _purchase_transaction_inner(transaction, doc_ref, item_key, price, item_name):
+    # ①トランザクション（安全な箱）の中で最新のデータを取得
+    snapshot = doc_ref.get(transaction=transaction)
+
+    if not snapshot.exists:
+        return "ユーザーデータが見つかりません。"
+
+    user_data = snapshot.to_dict()
     my_items = user_data.get("items", [])
     carrot_count = user_data.get("carrot_count", 0)
 
@@ -147,12 +175,27 @@ def process_purchase(user_id, item_key, price, item_name):
     if carrot_count < price:
         return "人参が足りませんっ！🐰💦"
 
-    # Execute purchase
+    # ②購入できたらデータを上書き
     new_carrot_count = carrot_count - price
     my_items.append(item_key)
-    doc_ref.update({"carrot_count": new_carrot_count, "items": my_items})
+    transaction.update(doc_ref, {
+        "carrot_count": new_carrot_count,
+        "items": my_items
+    })
 
     return f"まいどあり！{item_name}をお買い上げ！\n(残り人参: {new_carrot_count}本)"
+
+def process_purchase(user_id, item_key, price, item_name):
+    """購入処理のエントリポイント"""
+    db = init_db()
+    
+    # 買う前にユーザーデータが存在するか確認・作成しておく
+    get_or_create_user(user_id)
+    doc_ref = db.collection("rabbit_gamers").document(user_id)
+    transaction = db.transaction()
+    
+    # 内側の関数を呼び出す
+    return _purchase_transaction_inner(transaction, doc_ref, item_key, price, item_name)
 
 def process_change_look(user_id, look_key, item_req, message_success, message_fail):
     """Generic logic for changing appearance."""
