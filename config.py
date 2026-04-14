@@ -6,10 +6,20 @@ load_dotenv()
 
 # LINE Bot Settings
 CHANNEL_ACCESS_TOKEN = os.environ.get("CHANNEL_ACCESS_TOKEN")
+if not CHANNEL_ACCESS_TOKEN:
+    raise ValueError("環境変数 CHANNEL_ACCESS_TOKEN が設定されていません。")
+
 CHANNEL_SECRET = os.environ.get("CHANNEL_SECRET")
+# 追加！
+if not CHANNEL_SECRET:
+    raise ValueError("環境変数 CHANNEL_SECRET が設定されていません。")
 
 # Google Gemini Settings
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+# 追加！
+if not GEMINI_API_KEY:
+    raise ValueError("環境変数 GEMINI_API_KEY が設定されていません。")
+
 
 # Persona Settings
 RABBIT_SYSTEM_INSTRUCTION = """
