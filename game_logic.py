@@ -1,7 +1,8 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
-import pytz
+from zoneinfo import ZoneInfo
+from datetime import datetime
 import google.generativeai as genai
 from config import GEMINI_API_KEY, RABBIT_SYSTEM_INSTRUCTION
 from firebase_admin import firestore
@@ -89,16 +90,16 @@ def process_morning_greeting(user_id):
     db = init_db()
     doc_ref = db.collection("rabbit_gamers").document(user_id)
     transaction = db.transaction()
-    
+
     today_date = datetime.now(pytz.timezone("Asia/Tokyo")).date()
     today_str = today_date.strftime("%Y-%m-%d")
-    
+
     return _morning_greeting_transaction(transaction, doc_ref, today_str, today_date)
 
 @firestore.transactional
 def _morning_greeting_transaction(transaction, doc_ref, today_str, today_date):
     snapshot = doc_ref.get(transaction=transaction)
-    
+
     if not snapshot.exists:
         # 初回ログイン時の処理
         initial_data = {
@@ -188,12 +189,12 @@ def _purchase_transaction_inner(transaction, doc_ref, item_key, price, item_name
 def process_purchase(user_id, item_key, price, item_name):
     """購入処理のエントリポイント"""
     db = init_db()
-    
+
     # 買う前にユーザーデータが存在するか確認・作成しておく
     get_or_create_user(user_id)
     doc_ref = db.collection("rabbit_gamers").document(user_id)
     transaction = db.transaction()
-    
+
     # 内側の関数を呼び出す
     return _purchase_transaction_inner(transaction, doc_ref, item_key, price, item_name)
 
