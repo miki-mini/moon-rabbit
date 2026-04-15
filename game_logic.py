@@ -11,6 +11,11 @@ from firebase_admin import firestore
 # Gemini Model (Lazy loaded)
 model = None
 
+def get_now_jst():
+    return datetime.now(ZoneInfo("Asia/Tokyo"))
+
+
+
 def get_model():
     global model
     if model is None:
@@ -39,8 +44,10 @@ def init_db():
 
 def get_moon_info():
     """Calculate the current moon phase emoji."""
-    base_date = datetime(2023, 1, 22, tzinfo=pytz.timezone("Asia/Tokyo"))
-    current_date = datetime.now(pytz.timezone("Asia/Tokyo"))
+    base_date = datetime(2023, 1, 22, tzinfo=ZoneInfo("Asia/Tokyo"))
+
+# 2. 現在時刻を取得する場合
+    current_date = datetime.now(ZoneInfo("Asia/Tokyo"))
 
     diff = current_date - base_date
     days = diff.days + (diff.seconds / 86400)
@@ -91,7 +98,7 @@ def process_morning_greeting(user_id):
     doc_ref = db.collection("rabbit_gamers").document(user_id)
     transaction = db.transaction()
 
-    today_date = datetime.now(pytz.timezone("Asia/Tokyo")).date()
+    today_date = current_date = get_now_jst()
     today_str = today_date.strftime("%Y-%m-%d")
 
     return _morning_greeting_transaction(transaction, doc_ref, today_str, today_date)
@@ -110,7 +117,7 @@ def _morning_greeting_transaction(transaction, doc_ref, today_str, today_date):
             "last_login": today_str,
             "items": [],
             "current_look": "normal",
-            "created_at": datetime.now(pytz.timezone("Asia/Tokyo")),
+            "current_date" = get_now_jst(),
         }
         transaction.set(doc_ref, initial_data)
         return "今日から早起きチャレンジスタート！\n最初のご褒美の人参です！🥕"
