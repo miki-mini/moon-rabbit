@@ -192,7 +192,7 @@ def _purchase_transaction_inner(transaction, doc_ref, item_key, price, item_name
 
     return f"まいどあり！{item_name}をお買い上げ！\n(残り人参: {new_carrot_count}本)"
 
-def process_purchase(user_id, item_key, price, item_name):
+def process_purchase(user_id: str, item_key: str, price: int, item_name: str) -> str:
     """購入処理のエントリポイント"""
     db = init_db()
 
@@ -204,7 +204,7 @@ def process_purchase(user_id, item_key, price, item_name):
     # 内側の関数を呼び出す
     return _purchase_transaction_inner(transaction, doc_ref, item_key, price, item_name)
 
-def process_change_look(user_id, look_key, item_req, message_success, message_fail):
+def process_change_look(user_id: str, look_key: str, item_req: str, message_success: str, message_fail: str) -> str:
     """Generic logic for changing appearance."""
     user_data, doc_ref = get_or_create_user(user_id)
     my_items = user_data.get("items", [])
