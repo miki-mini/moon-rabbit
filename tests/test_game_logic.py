@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from unittest.mock import MagicMock, patch
 import game_logic
 
@@ -59,9 +59,6 @@ def test_morning_greeting_streak(mock_firestore):
     # OR we use freezegun (not installed).
     # Let's try a logic test without mocking datetime by setting last_login to yesterday's real date.
 
-    real_yesterday = (datetime.now().date() - pd.Timedelta(days=1)) if 'pd' in locals() else None
-    # Just use python datetime
-    from datetime import timedelta
     real_yesterday_str = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
     mock_doc.to_dict.return_value = {
