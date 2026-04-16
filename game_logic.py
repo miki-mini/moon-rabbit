@@ -1,7 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
-import pytz
+from zoneinfo import ZoneInfo
 import google.generativeai as genai
 from config import GEMINI_API_KEY, RABBIT_SYSTEM_INSTRUCTION
 from firebase_admin import firestore
@@ -9,6 +9,11 @@ from firebase_admin import firestore
 # --- Core Logic & Database ---
 # Gemini Model (Lazy loaded)
 model = None
+
+def get_now_jst():
+    return datetime.now(ZoneInfo("Asia/Tokyo"))
+
+
 
 def get_model():
     global model
@@ -38,8 +43,10 @@ def init_db():
 
 def get_moon_info():
     """Calculate the current moon phase emoji."""
-    base_date = datetime(2023, 1, 22, tzinfo=pytz.timezone("Asia/Tokyo"))
-    current_date = datetime.now(pytz.timezone("Asia/Tokyo"))
+    base_date = datetime(2023, 1, 22, tzinfo=ZoneInfo("Asia/Tokyo"))
+
+# 2. 現在時刻を取得する場合
+    current_date = datetime.now(ZoneInfo("Asia/Tokyo"))
 
     diff = current_date - base_date
     days = diff.days + (diff.seconds / 86400)
@@ -79,7 +86,7 @@ def get_or_create_user(user_id):
             "last_login": None,
             "items": [],
             "current_look": "normal",
-            "created_at": datetime.now(pytz.timezone("Asia/Tokyo")),
+            "created_at": get_now_jst(),
         }
         doc_ref.set(initial_data)
         return initial_data, doc_ref
@@ -89,16 +96,16 @@ def process_morning_greeting(user_id):
     db = init_db()
     doc_ref = db.collection("rabbit_gamers").document(user_id)
     transaction = db.transaction()
-    
-    today_date = datetime.now(pytz.timezone("Asia/Tokyo")).date()
+
+    today_date = get_now_jst().date()
     today_str = today_date.strftime("%Y-%m-%d")
-    
+
     return _morning_greeting_transaction(transaction, doc_ref, today_str, today_date)
 
 @firestore.transactional
 def _morning_greeting_transaction(transaction, doc_ref, today_str, today_date):
     snapshot = doc_ref.get(transaction=transaction)
-    
+
     if not snapshot.exists:
         # 初回ログイン時の処理
         initial_data = {
@@ -109,7 +116,7 @@ def _morning_greeting_transaction(transaction, doc_ref, today_str, today_date):
             "last_login": today_str,
             "items": [],
             "current_look": "normal",
-            "created_at": datetime.now(pytz.timezone("Asia/Tokyo")),
+            "current_at" : get_now_jst(),
         }
         transaction.set(doc_ref, initial_data)
         return "今日から早起きチャレンジスタート！\n最初のご褒美の人参です！🥕"
@@ -188,12 +195,12 @@ def _purchase_transaction_inner(transaction, doc_ref, item_key, price, item_name
 def process_purchase(user_id, item_key, price, item_name):
     """購入処理のエントリポイント"""
     db = init_db()
-    
+
     # 買う前にユーザーデータが存在するか確認・作成しておく
     get_or_create_user(user_id)
     doc_ref = db.collection("rabbit_gamers").document(user_id)
     transaction = db.transaction()
-    
+
     # 内側の関数を呼び出す
     return _purchase_transaction_inner(transaction, doc_ref, item_key, price, item_name)
 
