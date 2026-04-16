@@ -2,7 +2,6 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from datetime import datetime
 import google.generativeai as genai
 from config import GEMINI_API_KEY, RABBIT_SYSTEM_INSTRUCTION
 from firebase_admin import firestore
@@ -87,7 +86,7 @@ def get_or_create_user(user_id):
             "last_login": None,
             "items": [],
             "current_look": "normal",
-            "created_at": datetime.now(pytz.timezone("Asia/Tokyo")),
+            "created_at": get_now_jst(),
         }
         doc_ref.set(initial_data)
         return initial_data, doc_ref
@@ -98,7 +97,7 @@ def process_morning_greeting(user_id):
     doc_ref = db.collection("rabbit_gamers").document(user_id)
     transaction = db.transaction()
 
-    today_date = current_date = get_now_jst()
+    today_date = get_now_jst().date()
     today_str = today_date.strftime("%Y-%m-%d")
 
     return _morning_greeting_transaction(transaction, doc_ref, today_str, today_date)
@@ -117,7 +116,7 @@ def _morning_greeting_transaction(transaction, doc_ref, today_str, today_date):
             "last_login": today_str,
             "items": [],
             "current_look": "normal",
-            "current_date" = get_now_jst(),
+            "current_at" : get_now_jst(),
         }
         transaction.set(doc_ref, initial_data)
         return "今日から早起きチャレンジスタート！\n最初のご褒美の人参です！🥕"
