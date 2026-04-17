@@ -9,128 +9,15 @@ from linebot.models import (
     ButtonComponent
 )
 from config import IMAGE_URLS
+import json
 
 def create_shop_message():
     """Create the shop carousel Flex Message."""
-    shop_carousel = {
-        "type": "carousel",
-        "contents": [
-            # Substitution Doll
-            {
-                "type": "bubble",
-                "hero": {
-                    "type": "image",
-                    "url": IMAGE_URLS["shop_doll"],
-                    "size": "full",
-                    "aspectRatio": "20:13",
-                    "aspectMode": "fit",
-                    "backgroundColor": "#ffffff",
-                },
-                "body": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "contents": [
-                        {"type": "text", "text": "身代わり人形", "weight": "bold", "size": "xl"},
-                        {
-                            "type": "text",
-                            "text": "早起き失敗しても安心！\n1回だけ記録を守ってくれるよ🧸",
-                            "wrap": True,
-                            "size": "sm",
-                            "color": "#666666",
-                        },
-                    ],
-                },
-                "footer": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "contents": [
-                        {
-                            "type": "button",
-                            "style": "primary",
-                            "color": "#FF9933",
-                            "action": {
-                                "type": "message",
-                                "label": "5人参で買う",
-                                "text": "身代わり人形を買う",
-                            },
-                        }
-                    ],
-                },
-            },
-            # Sunglasses
-            {
-                "type": "bubble",
-                "hero": {
-                    "type": "image",
-                    "url": IMAGE_URLS["shop_sunglasses"],
-                    "size": "full",
-                    "aspectRatio": "20:13",
-                    "aspectMode": "fit",
-                    "backgroundColor": "#ffffff",
-                },
-                "body": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "contents": [
-                        {"type": "text", "text": "イケてるサングラス", "weight": "bold", "size": "xl"},
-                        {"type": "text", "text": "10人参で買う", "size": "sm", "color": "#666666"},
-                    ],
-                },
-                "footer": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "contents": [
-                        {
-                            "type": "button",
-                            "style": "primary",
-                            "color": "#FF9933",
-                            "action": {
-                                "type": "message",
-                                "label": "10人参で買う",
-                                "text": "サングラスを買う",
-                            },
-                        }
-                    ],
-                },
-            },
-            # Pink Dye
-            {
-                "type": "bubble",
-                "hero": {
-                    "type": "image",
-                    "url": IMAGE_URLS["shop_dye"],
-                    "size": "full",
-                    "aspectRatio": "20:13",
-                    "aspectMode": "fit",
-                    "backgroundColor": "#ffffff",
-                },
-                "body": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "contents": [
-                        {"type": "text", "text": "魔法のピンク染め粉", "weight": "bold", "size": "xl"},
-                        {"type": "text", "text": "20人参で買う", "size": "sm", "color": "#666666"},
-                    ],
-                },
-                "footer": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "contents": [
-                        {
-                            "type": "button",
-                            "style": "primary",
-                            "color": "#FF9933",
-                            "action": {
-                                "type": "message",
-                                "label": "20人参で買う",
-                                "text": "ピンク染め粉を買う",
-                            },
-                        }
-                    ],
-                },
-            },
-        ],
-    }
+        # JSONファイルからデザインデータを読み込む
+    with open('flex_templates.json', 'r', encoding='utf-8') as f:
+        shop_carousel = json.load(f)
+
+
     return FlexSendMessage(alt_text="月面コンビニ", contents=shop_carousel)
 
 
